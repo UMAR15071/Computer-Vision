@@ -1,4 +1,6 @@
 import tkinter as tk
+import tkcalendar as tkcal
+from tkinter import ttk
 
 window = tk.Tk()
 window.geometry('1000x600')
@@ -11,12 +13,93 @@ def close_screens():
     for frame in window.winfo_children():
         frame.destroy()
 
+def pick_date(dob_entry):
+    global cal, date_window
 
+    date_window = tk.Toplevel()
+    date_window.grab_set()
+    date_window.title('Choose Date of Birth')
+    date_window.geometry('250x220+590+370')
+    
+    cal = tkcal.Calendar(date_window, selectmode='day', date_pattern='mm/dd/yyyy', 
+                         background='black', foreground='white', headersbackground='sky blue', 
+                         normalbackground='lightblue', weekendbackground='lightblue', 
+                         othermonthforeground='grey', othermonthbackground='lightgrey', 
+                         othermonthweforeground='grey', othermonthwebackground='lightgrey', 
+                         selectbackground='blue', selectforeground='white')
+    cal.place(x=0, y=0)
 
+    submit_btn = tk.Button(date_window, text='Submit', command=lambda: grab_date(dob_entry), bg='#0055fe', fg='white', font=('yu gothic ui', 12))
+    submit_btn.place(x=80, y=190)
+
+def grab_date(dob_entry):
+    dob_entry.delete(0, tk.END)
+    dob_entry.insert(0, cal.get_date())
+    date_window.destroy()
 
 #==============================================================================================================
 def moreOptions():
     close_screens()
+
+    def home_page():
+        home_frame = tk.Frame(main_frame, highlightbackground='#FAF9F6', bg='#FAF9F6',
+                        highlightthickness=2)
+
+        home_frame.pack(side=tk.LEFT)
+        home_frame.pack_propagate(False)
+        home_frame.configure(height=600, width=700)
+
+        home_label = tk.Label(home_frame, text = "Welcome [User]", font=('bold', 15),
+                                fg='black', bd=0, bg='#FAF9F6')
+        home_label.pack(pady=10)
+#=================================================================================================================
+        
+    def register_page():
+        register_frame = tk.Frame(main_frame, highlightbackground='#FAF9F6', bg='#FAF9F6',
+                                    highlightthickness=2)
+        register_frame.pack(side=tk.LEFT)
+        register_frame.pack_propagate(False)
+        register_frame.configure(height=600, width=700)
+
+        register_label = tk.Label(register_frame, text = "Register New User", font=('bold', 15),
+                                    fg='black', bg='#FAF9F6')
+        register_label.pack(pady=10)
+
+        label1 = tk.Label(register_frame, text="First Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
+        label1.place(x=100, y=100)
+        TextField1 = tk.Entry(register_frame, width=15, font=2)
+        TextField1.place(x=400, y=100)
+
+        label2 = tk.Label(register_frame, text="Last Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
+        label2.place(x=100, y=150)
+        TextField2 = tk.Entry(register_frame, width=15, font=2)
+        TextField2.place(x=400, y=150)
+
+        label3 = tk.Label(register_frame, text='Date of Birth', font=('bold', 15), fg='black', bg='#FAF9F6')
+        label3.place(x=100, y=200)
+
+        dob_entry = tk.Entry(register_frame, width=15, font=2)
+        dob_entry.place(x=400, y=200)
+        dob_entry.insert(0, 'mm/dd/yyyy')
+        dob_entry.bind('<Button-1>',lambda event: pick_date(dob_entry))
+
+        label4 = tk.Label(register_frame, text='Department', font=('bold', 15), fg='black', bg='#FAF9F6')
+        label4.place(x=100, y=250)
+
+        dept_combobox = ttk.Combobox(register_frame, values=["--select Dept--", "HR", "Computing", "Marketing", "Managing", "Engineering"],width=14, font=2, state='readonly')
+        dept_combobox.place(x=400, y=250)
+
+        photos_btn = tk.Button(register_frame, text="Take Photo", font=('bold', 15), width=55, fg='#FAF9F6', bg='black')
+        photos_btn.place(x=50, y=350)
+
+        submit_btn = tk.Button(register_frame, text="Submit", font=('bold', 15), width=55, fg='#FAF9F6', bg='#008000')
+        label3.place(x=100, y=200)
+        submit_btn.place(x=50, y=400)
+
+#==================================================================================================================
+    def delete_pages():
+        for frame in main_frame.winfo_children():
+            frame.destroy()
 
     def hide_indicate():
         home_indicate.config(bg='black')
@@ -25,9 +108,11 @@ def moreOptions():
         view_indicate.config(bg='black')
         report_indicate.config(bg='black')
 
-    def indicate(lb):
+    def indicate(lb, page):
+        delete_pages()
         hide_indicate()
         lb.config(bg='#FAF9F6')
+        page()
    #===================================== New Frame=================================================== 
     options_frame = tk.Frame(window, bg='black')
     options_frame.pack(side = tk.LEFT)
@@ -39,7 +124,7 @@ def moreOptions():
     #======================= Home Button ===============================================
     home_btn = tk.Button(options_frame, text='Home', font=('bold', 15),
                      fg='#FAF9F6', bd=0, bg='black',
-                     command = lambda: indicate(home_indicate))
+                     command = lambda: indicate(home_indicate, home_page))
     
     home_btn.place(x=20, y=50)
 
@@ -49,7 +134,7 @@ def moreOptions():
     #======================== Create BUtton ==============================================
     create_btn = tk.Button(options_frame, text='Add a new Record', font=('bold', 15),
                      fg='#FAF9F6', bd=0, bg='black',
-                     command = lambda: indicate(create_indicate))
+                     command = lambda: indicate(create_indicate, register_page))
     
     create_btn.place(x=20, y=100)
 
