@@ -111,7 +111,7 @@ def moreOptions():
                                     fg='black', bg='#FAF9F6')
         update_label.pack(pady=10)
 
-        id_label = tk.Label(update_frame, text="First Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
+        id_label = tk.Label(update_frame, text="Emplyee ID", font=('bold', 15), fg='black', bg='#FAF9F6' )
         id_label.place(x=100, y=100)
         id_TextField = tk.Entry(update_frame, width=15, font=2)
         id_TextField.place(x=400, y=100)
@@ -146,7 +146,48 @@ def moreOptions():
 
         submit_btn = tk.Button(update_frame, text="Update", font=('bold', 15), width=55, fg='#FAF9F6', bg='#D2042D')
         submit_btn.place(x=50, y=450)
+#=====================================================================================================================================
+    def view_page():
+        view_frame = tk.Frame(main_frame, highlightbackground='#FAF9F6', bg='#FAF9F6',
+                                    highlightthickness=2)
+        view_frame.pack(side=tk.LEFT)
+        view_frame.pack_propagate(False)
+        view_frame.configure(height=600, width=700)
 
+        update_label = tk.Label(view_frame, text = "View/Delete User Record", font=('bold', 15),
+                                    fg='black', bg='#FAF9F6')
+        update_label.pack(pady=10)
+
+        id_label = tk.Label(view_frame, text="Employee ID", font=('bold', 15), fg='black', bg='#FAF9F6' )
+        id_label.place(x=100, y=100)
+        id_TextField = tk.Entry(view_frame, width=15, font=2)
+        id_TextField.place(x=400, y=100)    
+
+        submit_btn = tk.Button(view_frame, text="Search", font=('bold', 15), width=55, fg='#FAF9F6', bg='#1f618d')
+        submit_btn.place(x=50, y=150)
+
+        first_name_label = tk.Label(view_frame, text="First Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
+        first_name_label.place(x=100, y=200)
+        first_name_TextField = tk.Entry(view_frame, width=15, font=2, state='disabled')
+        first_name_TextField.place(x=400, y=200)
+
+        last_name_label = tk.Label(view_frame, text="Last Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
+        last_name_label.place(x=100, y=250)
+        last_name_TextField = tk.Entry(view_frame, width=15, font=2, state='disabled')
+        last_name_TextField.place(x=400, y=250)
+
+        dob_label = tk.Label(view_frame, text='Date of Birth', font=('bold', 15), fg='black', bg='#FAF9F6')
+        dob_label.place(x=100, y=300)
+        dob_entry = tk.Entry(view_frame, width=15, font=2, state='disabled')
+        dob_entry.place(x=400, y=300)
+
+        dept_label = tk.Label(view_frame, text='Department', font=('bold', 15), fg='black', bg='#FAF9F6')
+        dept_label.place(x=100, y=350)
+        dept_textField = tk.Entry(view_frame, width=15, font=2, state='disabled')
+        dept_textField.place(x=400, y=350)
+
+        delete_btn = tk.Button(view_frame, text="Delete", font=('bold', 15), width=55, fg='#FAF9F6', bg='#D2042D')
+        delete_btn.place(x=50, y=400)
 
 #===================================================================================================================
     
@@ -207,7 +248,7 @@ def moreOptions():
     #==================================View / Delete Button===============================================
     view_btn = tk.Button(options_frame, text='View/Delete Record', font=('bold', 15),
                      fg='#FAF9F6', bd=0, bg='black',
-                     command = lambda: indicate(view_indicate))
+                     command = lambda: indicate(view_indicate, view_page))
     
     view_btn.place(x=20, y=200)
 
