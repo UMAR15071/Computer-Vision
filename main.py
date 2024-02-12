@@ -101,7 +101,52 @@ def moreOptions():
 #==================================================================================================================
 
     def update_page():
-        pass
+        update_frame = tk.Frame(main_frame, highlightbackground='#FAF9F6', bg='#FAF9F6',
+                                    highlightthickness=2)
+        update_frame.pack(side=tk.LEFT)
+        update_frame.pack_propagate(False)
+        update_frame.configure(height=600, width=700)
+
+        update_label = tk.Label(update_frame, text = "Update User", font=('bold', 15),
+                                    fg='black', bg='#FAF9F6')
+        update_label.pack(pady=10)
+
+        id_label = tk.Label(update_frame, text="First Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
+        id_label.place(x=100, y=100)
+        id_TextField = tk.Entry(update_frame, width=15, font=2)
+        id_TextField.place(x=400, y=100)
+
+        submit_btn = tk.Button(update_frame, text="Search", font=('bold', 15), width=55, fg='#FAF9F6', bg='#1f618d')
+        submit_btn.place(x=50, y=150)
+
+        first_name_label = tk.Label(update_frame, text="First Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
+        first_name_label.place(x=100, y=200)
+        first_name_TextField = tk.Entry(update_frame, width=15, font=2)
+        first_name_TextField.place(x=400, y=200)
+
+        last_name_label = tk.Label(update_frame, text="Last Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
+        last_name_label.place(x=100, y=250)
+        last_name_TextField = tk.Entry(update_frame, width=15, font=2)
+        last_name_TextField.place(x=400, y=250)
+
+        dob_label = tk.Label(update_frame, text='Date of Birth', font=('bold', 15), fg='black', bg='#FAF9F6')
+        dob_label.place(x=100, y=300)
+        dob_entry = tk.Entry(update_frame, width=15, font=2)
+        dob_entry.place(x=400, y=300)
+        dob_entry.insert(0, 'mm/dd/yyyy')
+        dob_entry.bind('<Button-1>',lambda event: pick_date(dob_entry))
+
+        dept_label = tk.Label(update_frame, text='Department', font=('bold', 15), fg='black', bg='#FAF9F6')
+        dept_label.place(x=100, y=350)
+        dept_combobox = ttk.Combobox(update_frame, values=["--select Dept--", "HR", "Computing", "Marketing", "Managing", "Engineering"],width=14, font=2, state='readonly')
+        dept_combobox.place(x=400, y=350)
+
+        photos_btn = tk.Button(update_frame, text="Update Photo", font=('bold', 15), width=55, fg='#FAF9F6', bg='black')
+        photos_btn.place(x=50, y=400)
+
+        submit_btn = tk.Button(update_frame, text="Update", font=('bold', 15), width=55, fg='#FAF9F6', bg='#D2042D')
+        submit_btn.place(x=50, y=450)
+
 
 #===================================================================================================================
     
@@ -152,7 +197,7 @@ def moreOptions():
     #========================= Update Button ===================================================
     update_btn = tk.Button(options_frame, text='Update Record', font=('bold', 15),
                      fg='#FAF9F6', bd=0, bg='black',
-                     command = lambda: indicate(update_indicate))
+                     command = lambda: indicate(update_indicate, update_page))
     
     update_btn.place(x=20, y=150)
 
