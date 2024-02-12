@@ -65,26 +65,26 @@ def moreOptions():
                                     fg='black', bg='#FAF9F6')
         register_label.pack(pady=10)
 
-        label1 = tk.Label(register_frame, text="First Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
-        label1.place(x=100, y=100)
-        TextField1 = tk.Entry(register_frame, width=15, font=2)
-        TextField1.place(x=400, y=100)
+        first_name_label = tk.Label(register_frame, text="First Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
+        first_name_label.place(x=100, y=100)
+        first_name_TextField = tk.Entry(register_frame, width=15, font=2)
+        first_name_TextField.place(x=400, y=100)
 
-        label2 = tk.Label(register_frame, text="Last Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
-        label2.place(x=100, y=150)
-        TextField2 = tk.Entry(register_frame, width=15, font=2)
-        TextField2.place(x=400, y=150)
+        last_name_label = tk.Label(register_frame, text="Last Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
+        last_name_label.place(x=100, y=150)
+        last_name_TextField = tk.Entry(register_frame, width=15, font=2)
+        last_name_TextField.place(x=400, y=150)
 
-        label3 = tk.Label(register_frame, text='Date of Birth', font=('bold', 15), fg='black', bg='#FAF9F6')
-        label3.place(x=100, y=200)
+        dob_label = tk.Label(register_frame, text='Date of Birth', font=('bold', 15), fg='black', bg='#FAF9F6')
+        dob_label.place(x=100, y=200)
 
         dob_entry = tk.Entry(register_frame, width=15, font=2)
         dob_entry.place(x=400, y=200)
         dob_entry.insert(0, 'mm/dd/yyyy')
         dob_entry.bind('<Button-1>',lambda event: pick_date(dob_entry))
 
-        label4 = tk.Label(register_frame, text='Department', font=('bold', 15), fg='black', bg='#FAF9F6')
-        label4.place(x=100, y=250)
+        dept_label = tk.Label(register_frame, text='Department', font=('bold', 15), fg='black', bg='#FAF9F6')
+        dept_label.place(x=100, y=250)
 
         dept_combobox = ttk.Combobox(register_frame, values=["--select Dept--", "HR", "Computing", "Marketing", "Managing", "Engineering"],width=14, font=2, state='readonly')
         dept_combobox.place(x=400, y=250)
@@ -93,10 +93,18 @@ def moreOptions():
         photos_btn.place(x=50, y=350)
 
         submit_btn = tk.Button(register_frame, text="Submit", font=('bold', 15), width=55, fg='#FAF9F6', bg='#008000')
-        label3.place(x=100, y=200)
+        dob_label.place(x=100, y=200)
         submit_btn.place(x=50, y=400)
 
 #==================================================================================================================
+
+#==================================================================================================================
+
+    def update_page():
+        pass
+
+#===================================================================================================================
+    
     def delete_pages():
         for frame in main_frame.winfo_children():
             frame.destroy()
