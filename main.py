@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkcalendar as tkcal
 from tkinter import ttk
+from util import takePhoto
 
 window = tk.Tk()
 window.geometry('1000x600')
@@ -89,7 +90,8 @@ def moreOptions():
         dept_combobox = ttk.Combobox(register_frame, values=["--select Dept--", "HR", "Computing", "Marketing", "Managing", "Engineering"],width=14, font=2, state='readonly')
         dept_combobox.place(x=400, y=250)
 
-        photos_btn = tk.Button(register_frame, text="Take Photo", font=('bold', 15), width=55, fg='#FAF9F6', bg='black')
+        photos_btn = tk.Button(register_frame, text="Take Photo", font=('bold', 15), width=55, fg='#FAF9F6', bg='black',
+                               command = lambda: takePhoto())
         photos_btn.place(x=50, y=350)
 
         submit_btn = tk.Button(register_frame, text="Submit", font=('bold', 15), width=55, fg='#FAF9F6', bg='#008000')
@@ -207,7 +209,7 @@ def moreOptions():
         hide_indicate()
         lb.config(bg='#FAF9F6')
         page()
-   #===================================== New Frame=================================================== 
+   #===================================== New Frame =================================================== 
     options_frame = tk.Frame(window, bg='black')
     options_frame.pack(side = tk.LEFT)
     options_frame.pack_propagate(False)
