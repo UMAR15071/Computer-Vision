@@ -8,7 +8,7 @@ window.geometry('1000x600')
 window.title('Screen')
 window.configure(bg='#848884')  
 
-first_frame = tk.Frame(window, bg='#c3c3c3')
+
 
 def close_screens():
     for frame in window.winfo_children():
@@ -267,7 +267,7 @@ def moreOptions():
     report_indicate.place(x=1, y=250, width=5, height=40)
     #===================================== Back Button =============================================
     back_btn = tk.Button(options_frame, text='Back to Main Menu', font=('bold', 15))
-    back_btn.configure(width=17, height=1, bg='#1f618d', fg='white')
+    back_btn.configure(width=17, height=1, bg='#1f618d', fg='white', command=lambda: main_menu())
     back_btn.place(x=50, y=500)
 
     #==================================== Main Frame =============================================
@@ -282,6 +282,9 @@ def moreOptions():
 
 #======================================================================================================================
 def main_menu():
+    close_screens()
+
+    first_frame = tk.Frame(window, bg='#c3c3c3')
     first_frame.pack(pady=150)
     first_frame.pack_propagate(False)
     first_frame.configure(width=500, height=300, relief="solid", border="2")
@@ -296,5 +299,4 @@ def main_menu():
     options_btn.pack(padx=100, pady=5)
 
 main_menu()
-
 window.mainloop()
