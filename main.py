@@ -192,7 +192,29 @@ def moreOptions():
         delete_btn.place(x=50, y=400)
 
 #===================================================================================================================
-    
+    def report_page():
+        report_frame = tk.Frame(main_frame, highlightbackground='#FAF9F6', bg='#FAF9F6',
+                                    highlightthickness=2)
+        report_frame.pack(side=tk.LEFT)
+        report_frame.pack_propagate(False)
+        report_frame.configure(height=600, width=700)
+
+        home_label = tk.Label(report_frame, text = "Generate Report", font=('bold', 15),
+                                fg='black', bd=0, bg='#FAF9F6')
+        home_label.pack(pady=10)
+
+        date_label = tk.Label(report_frame, text='Date', font=('bold', 15), fg='black', bg='#FAF9F6')
+        date_label.place(x=100, y=100)
+
+        date_entry = tk.Entry(report_frame, width=15, font=2)
+        date_entry.place(x=400, y=100)
+        date_entry.insert(0, 'mm/dd/yyyy')
+        date_entry.bind('<Button-1>',lambda event: pick_date(date_entry))
+
+        submit_btn = tk.Button(report_frame, text="Submit", font=('bold', 15), width=55, fg='#FAF9F6', bg='#008000')
+        submit_btn.place(x=50, y=150)
+
+#====================================================================================================================    
     def delete_pages():
         for frame in main_frame.winfo_children():
             frame.destroy()
@@ -259,7 +281,7 @@ def moreOptions():
     #======================================= Report Button =========================================
     report_btn = tk.Button(options_frame, text='Generate Report', font=('bold', 15),
                      fg='#FAF9F6', bd=0, bg='black',
-                     command = lambda: indicate(report_indicate))
+                     command = lambda: indicate(report_indicate, report_page))
     
     report_btn.place(x=20, y=250)
 
