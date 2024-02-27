@@ -1,5 +1,4 @@
 import tkinter as tk
-import tkcalendar as tkcal
 from tkinter import ttk
 from util import takePhoto, close_screens, pick_date
 
