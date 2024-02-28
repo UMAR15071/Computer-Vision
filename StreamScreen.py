@@ -1,5 +1,7 @@
 import tkinter as tk
 from util import close_screens
+from PIL import Image, ImageTk
+import cv2
 
 def stream_screen(window, main_menu):
     close_screens(window)
@@ -33,4 +35,22 @@ def stream_screen(window, main_menu):
 
     cam_frame.pack(side=tk.LEFT)
     cam_frame.pack_propagate(False)
-    cam_frame.configure(height=600, width=700)
+    cam_frame.configure(height=600, width=700, bg='white')
+    video_canvas = tk.Canvas(cam_frame, height=600, width=700, bg='white')
+    video_canvas.pack()
+    cap = cv2.VideoCapture(0)
+
+    def open_cam():
+        ret, frame = cap.read()
+        if ret:
+            cv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            pil_image = Image.fromarray(cv_image)
+            imgtk = ImageTk.PhotoImage(image=pil_image)
+
+            video_canvas.create_image(25,50, anchor=tk.NW, image=imgtk)
+            video_canvas.image = imgtk
+            
+            video_canvas.after(20, open_cam)
+
+
+    open_cam()

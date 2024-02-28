@@ -1,6 +1,7 @@
 import cv2
 import tkinter as tk
 import tkcalendar as tkcal
+from PIL import Image, ImageTk
 
 def takePhoto():
 
@@ -13,7 +14,7 @@ def takePhoto():
         cv2.imshow('frame', frame)
         
         if cv2.waitKey(1) & 0xFF == ord('c'):
-            cv2.imwrite(str(name) + ".jpg", frame)
+            cv2.imwrite("RegisteredFaces/"+str(name) + ".jpg", frame)
             cv2.waitKey(2000)
             break
 
@@ -23,6 +24,17 @@ def takePhoto():
 
     cv2.destroyAllWindows() 
 
+def open_cam(cap, video_canvas):
+    ret, frame = cap.read()
+    if ret:
+        cv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        pil_image = Image.fromarray(cv_image)
+        imgtk = ImageTk.PhotoImage(image=pil_image)
+
+        video_canvas.create_image(0,0, anchor=tk.NW, image=imgtk)
+        video_canvas.image = imgtk
+    
+    video_canvas.after(20, open_cam(cap, video_canvas))
 
 def close_screens(window):
     for frame in window.winfo_children():
