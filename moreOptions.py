@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from util import takePhoto, close_screens, pick_date
+from util import takePhoto, close_screens, pick_date,get_data
+from db_operations import insertData
 
 #==============================================================================================================
 def moreOptions(window, main_menu):
@@ -58,7 +59,8 @@ def moreOptions(window, main_menu):
                                command = lambda: takePhoto())
         photos_btn.place(x=50, y=350)
 
-        submit_btn = tk.Button(register_frame, text="Submit", font=('bold', 15), width=55, fg='#FAF9F6', bg='#008000')
+        submit_btn = tk.Button(register_frame, text="Submit", font=('bold', 15), width=55, fg='#FAF9F6', bg='#008000',
+                               command=lambda: get_data(first_name_TextField, last_name_TextField, dob_entry, dept_combobox))
         dob_label.place(x=100, y=200)
         submit_btn.place(x=50, y=400)
 
