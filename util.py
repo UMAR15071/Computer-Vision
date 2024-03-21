@@ -1,3 +1,4 @@
+from tkinter import messagebox
 import cv2
 import tkinter as tk
 import tkcalendar as tkcal
@@ -6,7 +7,8 @@ from db_operations import generate_id, insertData
 def takePhoto():
 
     video_capture = cv2.VideoCapture(0)
-    name = input('Enter you name: ')
+    global id
+    id = generate_id()
 
     while True:
         ret, frame = video_capture.read()
@@ -14,7 +16,7 @@ def takePhoto():
         cv2.imshow('frame', frame)
         
         if cv2.waitKey(1) & 0xFF == ord('c'):
-            cv2.imwrite("RegisteredFaces/"+str(name) + ".jpg", frame)
+            cv2.imwrite("RegisteredFaces/"+str(id) + ".jpg", frame)
             cv2.waitKey(2000)
             break
 
@@ -41,7 +43,7 @@ def pick_date(dob_entry):
                          background='black', foreground='white', headersbackground='sky blue', 
                          normalbackground='lightblue', weekendbackground='lightblue', 
                          othermonthforeground='grey', othermonthbackground='lightgrey', 
-                         othermonthweforeground='grey', othermonthwebackground='lightgrey', 
+                         othermonthweforeground='grey', othermonthwebackgroundd='lightgrey', 
                          selectbackground='blue', selectforeground='white')
     cal.place(x=0, y=0)
 
@@ -54,11 +56,15 @@ def grab_date(dob_entry):
     date_window.destroy()
 
 def get_data(first_name_TextField, last_name_TextField, dob_entry, dept_combobox): #from fields
-    id = generate_id()
-    print(id)
-    firstname = first_name_TextField.get()
-    lastname = last_name_TextField.get()
-    dob = dob_entry.get()
-    dept = dept_combobox.get()
-    insertData(id, firstname, lastname, dob, dept)
-    
+
+    if first_name_TextField.get() == "" or last_name_TextField.get() == "" or dob_entry.get() == "" or dept_combobox.get() == "":
+        messagebox.showerror("Error", "Error: Please fill all the fields")
+    else:
+        firstname = first_name_TextField.get()
+        lastname = last_name_TextField.get()
+        dob = dob_entry.get()
+        dept = dept_combobox.get()
+        if insertData(id, firstname, lastname, dob, dept):
+            first_name_TextField.delete(0, tk.END)
+            last_name_TextField.delete(0, tk.END)
+            dob_entry.delete(0, tk.END)

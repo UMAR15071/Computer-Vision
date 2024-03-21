@@ -1,16 +1,22 @@
 import sqlite3
+from tkinter import messagebox
 
 def insertData(id, firstname, lastname, dob, dept):
     con = sqlite3.connect('Attendance.db')
     cursor = con.cursor()
-
-    query = """INSERT INTO employees
+    try:
+        query = """INSERT INTO employees
                    VALUES(?,?,?,?,?)"""
-    cursor.execute(query, (id, firstname, lastname, dob, dept))
-    con.commit()
-    print("A record has been added")
-    cursor.close()
-    con.close()
+        cursor.execute(query, (id, firstname, lastname, dob, dept))
+        con.commit()
+        print("A record has been added")
+        cursor.close()
+        con.close()
+        return True
+    except:
+        messagebox.showerror("Error", "Picture Missing: Please save the person's picture before submitting")
+        return False
+
 
 def generate_id():
     con = sqlite3.connect('Attendance.db')
