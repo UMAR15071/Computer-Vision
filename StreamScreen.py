@@ -5,6 +5,7 @@ import numpy as np
 import cv2
 import os
 import face_recognition
+from db_operations import getDetails
 
 def stream_screen(window, main_menu):
     global process_this_frame
@@ -21,10 +22,18 @@ def stream_screen(window, main_menu):
     options_frame.configure(width=300, height=600)
 
     id_label = tk.Label(options_frame, text="ID", font=('bold', 15), fg='#FAF9F6', bg='black' )
-    id_label.place(x=100, y=100)
+    id_label.place(x=50, y=100)
 
-    def change(id):
-        id_label.configure(text=id)
+    first_name_label = tk.Label(options_frame, text="Name", font=('bold', 15), fg='#FAF9F6', bg='black' )
+    first_name_label.place(x=50, y=130)
+
+    dept_label = tk.Label(options_frame, text="Dept", font=('bold', 15), fg='#FAF9F6', bg='black' )
+    dept_label.place(x=50, y=160)
+
+    def change(id, firstname, lastname, dept):
+        id_label.configure(text="ID: "+id)
+        first_name_label.configure(text="Name: "+firstname+ " " + lastname)
+        dept_label.configure(text="Department: "+dept)
 
     clockin_btn = tk.Button(options_frame, width=17, height=1, text='Clock In', font=('bold', 15),
                             bg="#008000", fg='#FAF9F6')
@@ -83,7 +92,9 @@ def stream_screen(window, main_menu):
                     if matches[best_match_index]:
                         id = known_face_ids[best_match_index]
                     face_ids.append(id)
-                    change(id)
+                    
+                    firstname, lastname, dept = getDetails(id)
+                    change(id,firstname,lastname,dept)
                     
                 
             process_this_frame += 1

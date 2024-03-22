@@ -35,4 +35,19 @@ def generate_id():
     cursor.close()
     con.close()
     return count
+
+def getDetails(id):
+    con = sqlite3.connect('Attendance.db')
+    cursor = con.cursor()
+    query = """ SELECT First_name, Last_name, Department FROM employees WHERE Employee_ID = ?"""
+
+    cursor.execute(query, (id,))
+    result = cursor.fetchall()
     
+    print(result)
+    cursor.close()
+    con.close()
+    if result:
+        return result[0]
+    else:
+        return "Unknown", "Unknown", "Unknown"
