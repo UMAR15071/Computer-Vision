@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from util import takePhoto, close_screens, pick_date,get_data
-from db_operations import insertData
+
 
 #==============================================================================================================
 def moreOptions(window, main_menu):

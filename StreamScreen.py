@@ -1,3 +1,4 @@
+import datetime
 import tkinter as tk
 from util import close_screens
 from PIL import Image, ImageTk
@@ -5,7 +6,7 @@ import numpy as np
 import cv2
 import os
 import face_recognition
-from db_operations import getDetails
+from db_operations import getDetails, clockIn, clockOut, checkMarked
 
 def stream_screen(window, main_menu):
     global process_this_frame
@@ -34,14 +35,25 @@ def stream_screen(window, main_menu):
         id_label.configure(text="ID: "+id)
         first_name_label.configure(text="Name: "+firstname+ " " + lastname)
         dept_label.configure(text="Department: "+dept)
+        
+
+    def changeState(id):
+        date = datetime.date.today().strftime("%d-%m-%Y")
+        marked = checkMarked(id,date)
+        if marked:
+            clockout_btn.configure(state='normal')
+        else:
+            clockin_btn.configure(state='normal')
+        
 
     clockin_btn = tk.Button(options_frame, width=17, height=1, text='Clock In', font=('bold', 15),
-                            bg="#008000", fg='#FAF9F6')
+                            bg="#008000", fg='#FAF9F6', state='disabled',
+                            command=lambda: clockIn(id))
     
     clockin_btn.place(x=50, y=400)
 
     clockout_btn = tk.Button(options_frame, width=17, height=1, text='Clock Out', font=('bold', 15),
-                            fg='#FAF9F6', bg='#D2042D')
+                            fg='#FAF9F6', bg='#D2042D',state='disabled', command=lambda: clockOut(id))
     
     clockout_btn.place(x=50, y=450)
 
@@ -86,7 +98,8 @@ def stream_screen(window, main_menu):
                 face_ids = []
                 for face_encoding in face_encodings:
                     matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
-                    id = "Unknown"
+                    global id 
+                    id = "unknown"
                     face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
                     best_match_index = np.argmin(face_distances)
                     if matches[best_match_index]:
@@ -95,6 +108,7 @@ def stream_screen(window, main_menu):
                     
                     firstname, lastname, dept = getDetails(id)
                     change(id,firstname,lastname,dept)
+                    changeState(id)
                     
                 
             process_this_frame += 1
@@ -110,4 +124,3 @@ def stream_screen(window, main_menu):
         video_canvas.delete("all")
         main_menu()
 
-    # ... [Rest of your existing code]
