@@ -6,12 +6,13 @@ import numpy as np
 import cv2
 import os
 import face_recognition
-from db_operations import getDetails, clockIn, clockOut, checkMarked
+from db_operations import getDetails, clockIn, clockOut, checkMarked, establish_Connection
 
 def stream_screen(window, main_menu):
     global process_this_frame
     process_this_frame = 0
     close_screens(window)
+    establish_Connection()
 
     FOLDER = "RegisteredFaces"
     files = os.listdir(FOLDER)
@@ -38,12 +39,14 @@ def stream_screen(window, main_menu):
         
 
     def changeState(id):
-        date = datetime.date.today().strftime("%d-%m-%Y")
+        date = datetime.date.today().strftime("%Y-%m-%d")
         marked = checkMarked(id,date)
         if marked:
             clockout_btn.configure(state='normal')
+            clockin_btn.configure(state='disable')
         else:
             clockin_btn.configure(state='normal')
+            clockout_btn.configure(state='disable')
         
 
     clockin_btn = tk.Button(options_frame, width=17, height=1, text='Clock In', font=('bold', 15),
@@ -105,7 +108,6 @@ def stream_screen(window, main_menu):
                     if matches[best_match_index]:
                         id = known_face_ids[best_match_index]
                     face_ids.append(id)
-                    
                     firstname, lastname, dept = getDetails(id)
                     change(id,firstname,lastname,dept)
                     changeState(id)

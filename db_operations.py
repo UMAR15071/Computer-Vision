@@ -1,96 +1,117 @@
-import sqlite3
 from tkinter import messagebox,Button
 import datetime
+import mysql.connector
+
+db = None
+cursor = None
+
+def establish_Connection():
+    global db, cursor
+    try:
+        db = mysql.connector.connect(
+            host='localhost',
+            user='root',
+            password='root',
+            database='attendance_management'
+        )
+        cursor = db.cursor()
+    except mysql.connector.Error as err:
+        messagebox.showerror("Database Connection Error", f"Error: {err}")
+        return False
+    return True
 
 def insertData(id, firstname, lastname, dob, dept):
-    con = sqlite3.connect('Attendance.db')
-    cursor = con.cursor()
+    global cursor
+    if cursor is None:
+        if not establish_Connection():
+            return False
+
     try:
-        query = """INSERT INTO employees
-                   VALUES(?,?,?,?,?)"""
-        cursor.execute(query, (id, firstname, lastname, dob, dept))
-        con.commit()
-        print("A record has been added")
-        cursor.close()
-        con.close()
+        cursor.execute("""
+                    INSERT INTO employees (Employee_ID, First_Name, Last_Name, Date_of_Birth, Department)
+                    VALUES (%s,%s,%s,%s,%s)       
+                        """, (id, firstname, lastname, dob, dept))
+        db.commit()
         return True
-    except:
-        messagebox.showerror("Error", "Picture Missing: Please save the person's picture before submitting")
+    except mysql.connector.Error as err:
+        messagebox.showerror("Database Insert Error", f"Error: {err}")
+        return False
+    except Exception as e:
+        messagebox.showerror("Error", f"An unexpected error occurred: {e}")
         return False
 
 
-def generate_id():
-    con = sqlite3.connect('Attendance.db')
-    cursor = con.cursor()
-
-    cursor.execute("""SELECT COUNT(*) FROM employees""")
-    count = cursor.fetchone()[0]
-    if count == 0:
-        count += 1
-    else:
-        query = """SELECT Employee_ID FROM employees
-                ORDER BY Employee_ID DESC LIMIT 1"""
-        cursor.execute(query)
-        last_record_id = cursor.fetchone()[0]
-        count = last_record_id + 1
+def connected():
+    if db is not None:
+        return True
+    else: 
+        return False
+    
+def connectionClose():
     cursor.close()
-    con.close()
-    return count
+    db.close()
+
+def generate_id():
+    # Assuming 'cursor' is already defined and connected to your database
+    query = "SELECT MAX(Employee_ID) FROM employees"
+    cursor.execute(query)
+    result = cursor.fetchone()[0]  # Get the first (and only) item from the tuple
+
+    if result is None:
+        # Table is empty, start IDs from 1
+        return 1
+    else:
+        # Increment the last ID by 1
+        return result + 1
+
 
 def getDetails(id):
-    con = sqlite3.connect('Attendance.db')
-    cursor = con.cursor()
-    query = """ SELECT First_name, Last_name, Department FROM employees WHERE Employee_ID = ?"""
-
-    cursor.execute(query, (id,))
-    result = cursor.fetchall()
-    cursor.close()
-    con.close()
-    if result:
-        return result[0]
-    else:
-        return "Unknown", "Unknown", "Unknown"
+    try:
+        query = """SELECT First_name, Last_name, Department FROM employees WHERE Employee_ID = %s"""
+        cursor.execute(query, (id,))
+        result = cursor.fetchone()
+        if result:
+            return result
+        else:
+            return "Unknown", "Unknown", "Unknown"  
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None  
 
 def checkMarked(id, date):
     if id == "Unknown":
-        print("invalid credentials")
+        print("Invalid credentials")
+        return False
     else:
-        con = sqlite3.connect('Attendance.db')
-        cursor = con.cursor()
-        query = """SELECT Time_Clock_out
+        try:
+            query = """SELECT Time_Clocked_Out
                     FROM registers
-                    WHERE Employee_ID = ? AND Date = ? 
-                    ORDER BY Time_Clock_In DESC LIMIT 1"""
-        cursor.execute(query, (id, date))
-        result = cursor.fetchone()
-        cursor.close()
-        con.close()
-        if result:
-            if result[0] == "N/A":
+                    WHERE Employee_ID = %s AND Date = %s
+                    ORDER BY Time_Clocked_In DESC LIMIT 1"""
+            cursor.execute(query, (id, date))
+            result = cursor.fetchone()
+            if result[0] is None:
                 return True
-            else: 
+            else:
                 return False
-        else: 
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
             return False
-        
-
-
     
 def clockIn(id):
+    print(id)
     if id == "Unknown":
-        print("can't run")
-    else:
-        date = datetime.date.today().strftime("%d-%m-%Y")
-        time = datetime.datetime.now().time().strftime("%H:%M")
-        con = sqlite3.connect('Attendance.db')
-        cursor = con.cursor()
-        query = """INSERT INTO registers
-                    values(?,?,?,?)"""
-        cursor.execute(query, (id,date,time,"N/A"))
-        con.commit()
-        cursor.close()
-        con.close()
+        print("Can't run")
+    try:
+        date = datetime.date.today().strftime("%Y-%m-%d")  # Adjust the format if needed
+        time = datetime.datetime.now().strftime("%H:%M")  # Adjust the format if needed
+        query = """INSERT INTO registers (Employee_ID, Date, Time_Clocked_In)
+                   VALUES (%s, %s, %s)"""
+        cursor.execute(query, (id, date, time))
+        db.commit()
         print("Attendance marked")
+    except mysql.connector.Error as err:
+        print(f"Database error: {err}")
 
 
 def clockOut(id):
@@ -98,13 +119,9 @@ def clockOut(id):
         print("invalid credentials")
     else:
         time = datetime.datetime.now().time().strftime("%H:%M")
-        con = sqlite3.connect('Attendance.db')
-        cursor = con.cursor()
         query = """UPDATE registers
-                    SET Time_Clock_out = ? WHERE 
-                    Employee_ID = ?"""
+                    SET Time_Clocked_Out = %s WHERE 
+                    Employee_ID = %s"""
         cursor.execute(query, (time, id))
-        con.commit()
-        cursor.close()
-        con.close()
-        print("Employee timed out")
+        db.commit()
+        print("Employee clocked out")

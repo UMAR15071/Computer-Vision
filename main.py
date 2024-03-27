@@ -1,6 +1,7 @@
 import tkinter as tk
 from moreOptions import moreOptions,close_screens
 from StreamScreen import stream_screen
+from db_operations import connected, connectionClose
 
 
 window = tk.Tk()
@@ -10,7 +11,9 @@ window.configure(bg='#848884')
 #======================================================================================================================
 def main_menu():
     close_screens(window)
-
+    if connected():
+        connectionClose()
+    
     first_frame = tk.Frame(window, bg='#c3c3c3')
     first_frame.pack(pady=150)
     first_frame.pack_propagate(False)

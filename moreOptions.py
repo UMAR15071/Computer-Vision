@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
 from util import takePhoto, close_screens, pick_date,get_data
+from db_operations import establish_Connection
 
 
 #==============================================================================================================
 def moreOptions(window, main_menu):
     close_screens(window)
+    establish_Connection()
 
     def home_page():
         home_frame = tk.Frame(main_frame, highlightbackground='#FAF9F6', bg='#FAF9F6',
