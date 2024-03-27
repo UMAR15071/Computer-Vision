@@ -43,10 +43,17 @@ def stream_screen(window, main_menu):
         marked = checkMarked(id,date)
         if marked:
             clockout_btn.configure(state='normal')
-            clockin_btn.configure(state='disable')
+            clockin_btn.configure(state='disabled')
         else:
             clockin_btn.configure(state='normal')
-            clockout_btn.configure(state='disable')
+            clockout_btn.configure(state='disabled')
+    
+    def disableButtons():
+        id_label.configure(text="ID: ")
+        first_name_label.configure(text="Name: ")
+        dept_label.configure(text="Department: ")
+        clockin_btn.configure(state='disabled')
+        clockout_btn.configure(state='disabled')
         
 
     clockin_btn = tk.Button(options_frame, width=17, height=1, text='Clock In', font=('bold', 15),
@@ -96,21 +103,25 @@ def stream_screen(window, main_menu):
             
             if process_this_frame % 50 == 0:
                 face_locations = face_recognition.face_locations(cv_image)
-                face_encodings = face_recognition.face_encodings(cv_image, face_locations)
+                print(face_locations)
+                if face_locations == []:
+                    disableButtons()
+                else:
+                    face_encodings = face_recognition.face_encodings(cv_image, face_locations)
 
-                face_ids = []
-                for face_encoding in face_encodings:
-                    matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
-                    global id 
-                    id = "unknown"
-                    face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
-                    best_match_index = np.argmin(face_distances)
-                    if matches[best_match_index]:
-                        id = known_face_ids[best_match_index]
-                    face_ids.append(id)
-                    firstname, lastname, dept = getDetails(id)
-                    change(id,firstname,lastname,dept)
-                    changeState(id)
+                    face_ids = []
+                    for face_encoding in face_encodings:
+                        matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+                        global id 
+                        id = "unknown"
+                        face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
+                        best_match_index = np.argmin(face_distances)
+                        if matches[best_match_index]:
+                            id = known_face_ids[best_match_index]
+                        face_ids.append(id)
+                        firstname, lastname, dept = getDetails(id)
+                        change(id,firstname,lastname,dept)
+                        changeState(id)
                     
                 
             process_this_frame += 1

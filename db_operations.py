@@ -90,10 +90,11 @@ def checkMarked(id, date):
                     ORDER BY Time_Clocked_In DESC LIMIT 1"""
             cursor.execute(query, (id, date))
             result = cursor.fetchone()
-            if result[0] is None:
-                return True
-            else:
-                return False
+            if result:
+                if result[0] is None:
+                    return True
+                else:
+                    return False
         except mysql.connector.Error as err:
             print(f"Database error: {err}")
             return False
