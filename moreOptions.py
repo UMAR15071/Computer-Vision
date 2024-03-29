@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from util import takePhoto, close_screens, pick_date,get_data, retrieveData
-from db_operations import establish_Connection, updateRecord
+from util import takePhoto, close_screens, pick_date,get_data, retrieveData, fillData
+from db_operations import establish_Connection, updateRecord, deleteRecord
 
 
 #==============================================================================================================
@@ -136,7 +136,8 @@ def moreOptions(window, main_menu):
         id_TextField = tk.Entry(view_frame, width=15, font=2)
         id_TextField.place(x=400, y=100)    
 
-        submit_btn = tk.Button(view_frame, text="Search", font=('bold', 15), width=55, fg='#FAF9F6', bg='#1f618d')
+        submit_btn = tk.Button(view_frame, text="Search", font=('bold', 15), width=55, fg='#FAF9F6', bg='#1f618d',
+                               command=lambda: fillData(id_TextField, first_name_TextField, last_name_TextField, dob_entry, dept_textField))
         submit_btn.place(x=50, y=150)
 
         first_name_label = tk.Label(view_frame, text="First Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
@@ -159,7 +160,8 @@ def moreOptions(window, main_menu):
         dept_textField = tk.Entry(view_frame, width=15, font=2, state='disabled')
         dept_textField.place(x=400, y=350)
 
-        delete_btn = tk.Button(view_frame, text="Delete", font=('bold', 15), width=55, fg='#FAF9F6', bg='#D2042D')
+        delete_btn = tk.Button(view_frame, text="Delete", font=('bold', 15), width=55, fg='#FAF9F6', bg='#D2042D',
+                               command= lambda: deleteRecord(id_TextField.get()))
         delete_btn.place(x=50, y=400)
 
 #===================================================================================================================

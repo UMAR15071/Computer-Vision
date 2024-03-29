@@ -156,3 +156,13 @@ def updateRecord(id_TextField, first_name_TextField, last_name_TextField, dob_en
             messagebox.showinfo("Success ","Recorded has been Updated")
         except mysql.connector.Error as err:
             print(f"Database error: {err}")
+
+def deleteRecord(id):
+    try:
+        query = """DELETE from employees 
+                WHERE Employee_ID = %s"""
+        cursor.execute(query, (id,))
+        db.commit()
+        messagebox.showinfo("Success ","Recorded has been deleted Successfully")
+    except mysql.connector.Error as err:
+            print(f"Database error: {err}")

@@ -127,3 +127,33 @@ def retrieveData(id_TextField, first_name_TextField, last_name_TextField, dob_en
     
    
     dept_combobox.set(dept)
+
+def fillData(id_TextField, first_name_TextField, last_name_TextField, dob_entry, dept_TextField):
+    id = id_TextField.get()
+
+    
+    first_name_TextField.configure(state = 'normal')
+    last_name_TextField.configure(state = 'normal')
+    dob_entry.configure(state = 'normal')
+    dept_TextField.configure(state = 'normal')
+
+    firstname, lastname, dob, dept = getDetails(id)
+
+    first_name_TextField.delete(0, tk.END)
+    first_name_TextField.insert(0, firstname)
+    
+    last_name_TextField.delete(0, tk.END)
+    last_name_TextField.insert(0, lastname)
+    
+    dob_entry.delete(0, tk.END)
+    dob_entry.insert(0, dob)
+
+    dept_TextField.delete(0,tk.END)
+    dept_TextField.insert(0, dept)
+
+    
+    first_name_TextField.configure(state = 'disabled')
+    last_name_TextField.configure(state = 'disabled')
+    dob_entry.configure(state = 'disabled')
+    dept_TextField.configure(state = 'disabled')
+
