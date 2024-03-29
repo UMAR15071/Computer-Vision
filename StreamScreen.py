@@ -36,6 +36,9 @@ def stream_screen(window, main_menu):
         id_label.configure(text="ID: "+id)
         first_name_label.configure(text="Name: "+firstname+ " " + lastname)
         dept_label.configure(text="Department: "+dept)
+
+        clockin_btn.configure(command=lambda: clockIn(id))
+        clockout_btn.configure(command=lambda: clockOut(id))
         
 
     def changeState(id):
@@ -57,13 +60,12 @@ def stream_screen(window, main_menu):
         
 
     clockin_btn = tk.Button(options_frame, width=17, height=1, text='Clock In', font=('bold', 15),
-                            bg="#008000", fg='#FAF9F6', state='disabled',
-                            command=lambda: clockIn(id))
+                            bg="#008000", fg='#FAF9F6', state='disabled')
     
     clockin_btn.place(x=50, y=400)
 
     clockout_btn = tk.Button(options_frame, width=17, height=1, text='Clock Out', font=('bold', 15),
-                            fg='#FAF9F6', bg='#D2042D',state='disabled', command=lambda: clockOut(id))
+                            fg='#FAF9F6', bg='#D2042D',state='disabled')
     
     clockout_btn.place(x=50, y=450)
 
@@ -112,7 +114,6 @@ def stream_screen(window, main_menu):
                     face_ids = []
                     for face_encoding in face_encodings:
                         matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
-                        global id 
                         id = "unknown"
                         face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
                         best_match_index = np.argmin(face_distances)
@@ -121,6 +122,7 @@ def stream_screen(window, main_menu):
                         face_ids.append(id)
                         firstname, lastname, dept = getDetails(id)
                         change(id,firstname,lastname,dept)
+                        #print(id)
                         changeState(id)
                     
                 
