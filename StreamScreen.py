@@ -120,7 +120,7 @@ def stream_screen(window, main_menu):
                         if matches[best_match_index]:
                             id = known_face_ids[best_match_index]
                         face_ids.append(id)
-                        firstname, lastname, dept = getDetails(id)
+                        firstname, lastname, dob, dept = getDetails(id)
                         change(id,firstname,lastname,dept)
                         #print(id)
                         changeState(id)

@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from util import takePhoto, close_screens, pick_date,get_data
-from db_operations import establish_Connection
+from util import takePhoto, close_screens, pick_date,get_data, retrieveData
+from db_operations import establish_Connection, updateRecord
 
 
 #==============================================================================================================
@@ -48,7 +48,7 @@ def moreOptions(window, main_menu):
 
         dob_entry = tk.Entry(register_frame, width=15, font=2)
         dob_entry.place(x=400, y=200)
-        dob_entry.insert(0, 'mm/dd/yyyy')
+        dob_entry.insert(0, 'yyyy-mm-dd')
         dob_entry.bind('<Button-1>',lambda event: pick_date(dob_entry))
 
         dept_label = tk.Label(register_frame, text='Department', font=('bold', 15), fg='black', bg='#FAF9F6')
@@ -86,7 +86,8 @@ def moreOptions(window, main_menu):
         id_TextField = tk.Entry(update_frame, width=15, font=2)
         id_TextField.place(x=400, y=100)
 
-        submit_btn = tk.Button(update_frame, text="Search", font=('bold', 15), width=55, fg='#FAF9F6', bg='#1f618d')
+        submit_btn = tk.Button(update_frame, text="Search", font=('bold', 15), width=55, fg='#FAF9F6', bg='#1f618d',
+                               command=lambda: retrieveData(id_TextField, first_name_TextField, last_name_TextField, dob_entry, dept_combobox))
         submit_btn.place(x=50, y=150)
 
         first_name_label = tk.Label(update_frame, text="First Name", font=('bold', 15), fg='black', bg='#FAF9F6' )
@@ -103,7 +104,7 @@ def moreOptions(window, main_menu):
         dob_label.place(x=100, y=300)
         dob_entry = tk.Entry(update_frame, width=15, font=2)
         dob_entry.place(x=400, y=300)
-        dob_entry.insert(0, 'mm/dd/yyyy')
+        dob_entry.insert(0, 'yyyy-mm-dd')
         dob_entry.bind('<Button-1>',lambda event: pick_date(dob_entry))
 
         dept_label = tk.Label(update_frame, text='Department', font=('bold', 15), fg='black', bg='#FAF9F6')
@@ -111,10 +112,12 @@ def moreOptions(window, main_menu):
         dept_combobox = ttk.Combobox(update_frame, values=["--select Dept--", "HR", "Computing", "Marketing", "Managing", "Engineering"],width=14, font=2, state='readonly')
         dept_combobox.place(x=400, y=350)
 
-        photos_btn = tk.Button(update_frame, text="Update Photo", font=('bold', 15), width=55, fg='#FAF9F6', bg='black')
+        photos_btn = tk.Button(update_frame, text="Update Photo", font=('bold', 15), width=55, fg='#FAF9F6', bg='black',
+                               command= lambda: takePhoto(id_TextField))
         photos_btn.place(x=50, y=400)
 
-        submit_btn = tk.Button(update_frame, text="Update", font=('bold', 15), width=55, fg='#FAF9F6', bg='#D2042D')
+        submit_btn = tk.Button(update_frame, text="Update", font=('bold', 15), width=55, fg='#FAF9F6', bg='#D2042D',
+                               command= lambda: updateRecord(id_TextField, first_name_TextField, last_name_TextField, dob_entry, dept_combobox))
         submit_btn.place(x=50, y=450)
 #=====================================================================================================================================
     def view_page():
@@ -176,7 +179,7 @@ def moreOptions(window, main_menu):
 
         date_entry = tk.Entry(report_frame, width=15, font=2)
         date_entry.place(x=400, y=100)
-        date_entry.insert(0, 'mm/dd/yyyy')
+        date_entry.insert(0, 'yyyy-mm-dd')
         date_entry.bind('<Button-1>',lambda event: pick_date(date_entry))
 
         submit_btn = tk.Button(report_frame, text="Submit", font=('bold', 15), width=55, fg='#FAF9F6', bg='#008000')

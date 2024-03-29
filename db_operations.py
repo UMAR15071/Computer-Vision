@@ -1,6 +1,7 @@
 from tkinter import messagebox,Button
 import datetime
 import mysql.connector
+import tkinter as tk
 
 db = None
 cursor = None
@@ -67,7 +68,7 @@ def generate_id():
 
 def getDetails(id):
     try:
-        query = """SELECT First_name, Last_name, Department FROM employees WHERE Employee_ID = %s"""
+        query = """SELECT First_name, Last_name,Date_Of_Birth, Department FROM employees WHERE Employee_ID = %s"""
         cursor.execute(query, (id,))
         result = cursor.fetchone()
         if result:
@@ -126,3 +127,32 @@ def clockOut(id):
         cursor.execute(query, (time, id))
         db.commit()
         print("Employee clocked out")
+
+def updateRecord(id_TextField, first_name_TextField, last_name_TextField, dob_entry, dept_combobox):
+    if first_name_TextField.get() == "" or last_name_TextField.get() == "" or dob_entry.get() == "" or dept_combobox.get() == "--select Dept--":
+        messagebox.showerror("Error", "Error: Please fill all the fields")
+    else:
+        query = """UPDATE employees 
+                SET First_Name = %s,
+                    Last_Name = %s,
+                    Date_of_Birth = %s,
+                    Department = %s
+                WHERE Employee_ID = %s"""
+        
+        id = id_TextField.get()
+        firstname = first_name_TextField.get() 
+        lastname = last_name_TextField.get()
+        dob = dob_entry.get()
+        dept = dept_combobox.get()
+        try:
+            cursor.execute(query, (firstname, lastname, dob, dept, id))
+            db.commit()
+
+            id_TextField.delete(0,tk.END)
+            first_name_TextField.delete(0, tk.END)
+            last_name_TextField.delete(0, tk.END)
+            dob_entry.delete(0, tk.END)
+            dept_combobox.set("--select Dept--")
+            messagebox.showinfo("Success ","Recorded has been Updated")
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
