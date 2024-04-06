@@ -11,12 +11,13 @@ mycursor = db.cursor()
 
 mycursor.execute('''
     CREATE TABLE Employees (
-        Employee_ID int AUTO_INCREMENT,
-        First_Name VARCHAR(15),
-        Last_Name VARCHAR(15),
-        DATE_Of_Birth date,
-        Department VARCHAR(20),
-        PRIMARY KEY (Employee_ID)
+    Employee_ID int AUTO_INCREMENT,
+    First_Name VARCHAR(15),
+    Last_Name VARCHAR(15),
+    Date_Of_Birth date,
+    Department VARCHAR(20),
+    Delete_Flag TINYINT DEFAULT 0,
+    PRIMARY KEY (Employee_ID)
     )
 ''')
 
@@ -29,4 +30,15 @@ mycursor.execute('''
         FOREIGN KEY (Employee_ID) REFERENCES Employees(Employee_ID)
     )
 ''')
+
+mycursor.execute("""
+    CREATE TABLE Administrators (
+    Administrator_ID int AUTO_INCREMENT,
+    Employee_ID int,
+    Username VARCHAR(30),
+    Password VARCHAR(30),
+    PRIMARY KEY (Administrator_ID),
+    FOREIGN KEY (Employee_ID) REFERENCES Employees(Employee_ID)
+)
+""")
 db.close()

@@ -105,7 +105,6 @@ def stream_screen(window, main_menu):
             
             if process_this_frame % 50 == 0:
                 face_locations = face_recognition.face_locations(cv_image)
-                print(face_locations)
                 if face_locations == []:
                     disableButtons()
                 else:
@@ -122,7 +121,6 @@ def stream_screen(window, main_menu):
                         face_ids.append(id)
                         firstname, lastname, dob, dept = getDetails(id)
                         change(id,firstname,lastname,dept)
-                        #print(id)
                         changeState(id)
                     
                 

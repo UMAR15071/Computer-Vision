@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from util import takePhoto, close_screens, pick_date,get_data, retrieveData, fillData
-from db_operations import establish_Connection, updateRecord, deleteRecord
+from util import takePhoto, close_screens, pick_date,get_data, retrieveData, fillData, updatePhoto
+from db_operations import establish_Connection, updateRecord, deleteRecord, getReport
 
 
 #==============================================================================================================
@@ -113,7 +113,7 @@ def moreOptions(window, main_menu):
         dept_combobox.place(x=400, y=350)
 
         photos_btn = tk.Button(update_frame, text="Update Photo", font=('bold', 15), width=55, fg='#FAF9F6', bg='black',
-                               command= lambda: takePhoto(id_TextField))
+                               command= lambda: updatePhoto(id_TextField))
         photos_btn.place(x=50, y=400)
 
         submit_btn = tk.Button(update_frame, text="Update", font=('bold', 15), width=55, fg='#FAF9F6', bg='#D2042D',
@@ -184,9 +184,26 @@ def moreOptions(window, main_menu):
         date_entry.insert(0, 'yyyy-mm-dd')
         date_entry.bind('<Button-1>',lambda event: pick_date(date_entry))
 
-        submit_btn = tk.Button(report_frame, text="Submit", font=('bold', 15), width=55, fg='#FAF9F6', bg='#008000')
+        submit_btn = tk.Button(report_frame, text="Submit", font=('bold', 15), width=55, fg='#FAF9F6', bg='#008000',
+                               command=lambda: getReport(date_entry.get(), trv))
         submit_btn.place(x=50, y=150)
 
+        trv = ttk.Treeview(report_frame)
+        trv.configure(height=15) 
+        trv.place(x=55, y=200)
+        trv["columns"] = ['1', '2', '3', '4']
+        trv['show'] = 'headings'
+
+        trv.column("1", width = 150, anchor ='c')
+        trv.column("2", width = 150, anchor ='c')
+        trv.column("3", width = 150, anchor ='c')
+        trv.column("4", width = 150, anchor ='c')
+
+        trv.heading("1", text ="First Name")
+        trv.heading("2", text ="Last Name")
+        trv.heading("3", text ="Clock In")
+        trv.heading("4", text ="Clock Out")  
+        
 #====================================================================================================================    
     def delete_pages():
         for frame in main_frame.winfo_children():

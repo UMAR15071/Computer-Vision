@@ -2,6 +2,7 @@ from tkinter import messagebox,Button
 import datetime
 import mysql.connector
 import tkinter as tk
+import os
 
 db = None
 cursor = None
@@ -53,31 +54,32 @@ def connectionClose():
     db.close()
 
 def generate_id():
-    # Assuming 'cursor' is already defined and connected to your database
     query = "SELECT MAX(Employee_ID) FROM employees"
     cursor.execute(query)
-    result = cursor.fetchone()[0]  # Get the first (and only) item from the tuple
+    result = cursor.fetchone()[0]  
 
     if result is None:
-        # Table is empty, start IDs from 1
         return 1
     else:
-        # Increment the last ID by 1
         return result + 1
 
 
 def getDetails(id):
     try:
-        query = """SELECT First_name, Last_name,Date_Of_Birth, Department FROM employees WHERE Employee_ID = %s"""
+        query = """SELECT First_name, Last_name, Date_Of_Birth, Department FROM employees WHERE Employee_ID = %s AND Delete_Flag = 0"""
         cursor.execute(query, (id,))
         result = cursor.fetchone()
         if result:
             return result
         else:
-            return "Unknown", "Unknown", "Unknown"  
+            return "Unknown", "Unknown", "Unknown"
+
     except mysql.connector.Error as err:
         print(f"Error: {err}")
-        return None  
+        return None
+    except TypeError as te:
+        print(f"TypeError: {te}")
+        return None
 
 def checkMarked(id, date):
     if id == "Unknown":
@@ -122,8 +124,10 @@ def clockOut(id):
     else:
         time = datetime.datetime.now().time().strftime("%H:%M")
         query = """UPDATE registers
-                    SET Time_Clocked_Out = %s WHERE 
-                    Employee_ID = %s"""
+                    SET Time_Clocked_Out = %s
+                    WHERE Employee_ID = %s
+                    ORDER BY Time_Clocked_In DESC
+                    LIMIT 1"""
         cursor.execute(query, (time, id))
         db.commit()
         print("Employee clocked out")
@@ -159,10 +163,44 @@ def updateRecord(id_TextField, first_name_TextField, last_name_TextField, dob_en
 
 def deleteRecord(id):
     try:
-        query = """DELETE from employees 
-                WHERE Employee_ID = %s"""
+        query = """UPDATE employees
+                    SET Delete_Flag = 1 
+                    WHERE Employee_ID = %s"""
         cursor.execute(query, (id,))
         db.commit()
+        if os.path.exists("RegisteredFaces/"+str(id) + ".jpg"):
+            os.remove("RegisteredFaces/"+str(id) + ".jpg")
         messagebox.showinfo("Success ","Recorded has been deleted Successfully")
     except mysql.connector.Error as err:
             print(f"Database error: {err}")
+
+def getReport(date, table):
+    try:
+        query = """SELECT Employee_ID, Time_Clocked_In, Time_Clocked_Out FROM registers
+                    WHERE Date = %s"""
+        cursor.execute(query, (date,))
+        results = cursor.fetchall()
+        if results:
+            for result in results:
+                id = result[0]
+                firstname, lastname = getName(id)
+                table.insert("",'end',values=(firstname, lastname,result[1],result[2]))
+        else:
+            for item in table.get_children():
+                table.delete(item)
+            messagebox.showerror("Error", f"No record found")
+    except Exception as e:
+        messagebox.showerror("Error", f"No record found {e}")
+        
+
+
+def getName(id):
+    try:
+        query = """SELECT First_Name, Last_Name 
+                    FROM employees
+                    WHERE Employee_ID = %s"""
+        cursor.execute(query,(id,))
+        results = cursor.fetchone()
+        return results[0], results[1]
+    except Exception as e:
+        messagebox.showerror("Error", f"unexpected error {e}")

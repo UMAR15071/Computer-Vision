@@ -18,6 +18,12 @@ def takePhoto():
         
         if cv2.waitKey(1) & 0xFF == ord('c'):
             cv2.imwrite("RegisteredFaces/"+str(id) + ".jpg", frame)
+            if os.path.exists("RegisteredFaces"):
+                cv2.imwrite("RegisteredFaces/"+str(id) + ".jpg", frame)
+            else:
+                os.makedirs("RegisteredFaces")
+                cv2.imwrite("RegisteredFaces/"+str(id) + ".jpg", frame)
+
             cv2.waitKey(2000)
             break
 
@@ -27,7 +33,7 @@ def takePhoto():
 
     cv2.destroyAllWindows() 
 
-def takePhoto(idTextField):
+def updatePhoto(idTextField):
 
     id = idTextField.get()
     print(id)
@@ -156,4 +162,4 @@ def fillData(id_TextField, first_name_TextField, last_name_TextField, dob_entry,
     last_name_TextField.configure(state = 'disabled')
     dob_entry.configure(state = 'disabled')
     dept_TextField.configure(state = 'disabled')
-
+    
