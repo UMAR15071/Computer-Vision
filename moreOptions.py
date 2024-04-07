@@ -291,3 +291,4 @@ def moreOptions(window, main_menu):
     main_frame.pack(side=tk.LEFT)
     main_frame.pack_propagate(False)
     main_frame.configure(height=600, width=700)
+    home_page()
