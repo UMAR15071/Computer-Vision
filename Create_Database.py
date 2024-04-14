@@ -1,7 +1,7 @@
 import mysql.connector
 
 db = mysql.connector.connect(
-    host='attendance-management.czg8eiywyuez.eu-west-1.rds.amazonaws.com',
+    host='attendancemanagement.czg8eiywyuez.eu-west-1.rds.amazonaws.com',
     user='admin',
     passwd='B00tCamp$',
     database='attendanceManagement'
@@ -26,7 +26,7 @@ mycursor.execute('''
     Employee_ID int,
     Date date,
     Time_Clocked_In VARCHAR(7),
-    Time_Clocked_Out VARCHAR(7) DEFAULT 'None',
+    Time_Clocked_Out VARCHAR(7),
     FOREIGN KEY (Employee_ID) REFERENCES Employees(Employee_ID)
     )
 ''')

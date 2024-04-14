@@ -11,10 +11,10 @@ def establish_Connection():
     global db, cursor
     try:
         db = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='root',
-            database='attendance_management'
+            host='attendancemanagement.czg8eiywyuez.eu-west-1.rds.amazonaws.com',
+            user='admin',
+            passwd='B00tCamp$',
+            database='attendanceManagement'
         )
         cursor = db.cursor()
     except mysql.connector.Error as err:
@@ -30,7 +30,7 @@ def insertData(id, firstname, lastname, dob, dept):
 
     try:
         cursor.execute("""
-                    INSERT INTO employees (Employee_ID, First_Name, Last_Name, Date_of_Birth, Department)
+                    INSERT INTO Employees (Employee_ID, First_Name, Last_Name, Date_of_Birth, Department)
                     VALUES (%s,%s,%s,%s,%s)       
                         """, (id, firstname, lastname, dob, dept))
         db.commit()
@@ -54,7 +54,7 @@ def connectionClose():
     db.close()
 
 def generate_id():
-    query = "SELECT MAX(Employee_ID) FROM employees"
+    query = "SELECT MAX(Employee_ID) FROM Employees"
     cursor.execute(query)
     result = cursor.fetchone()[0]  
 
@@ -66,7 +66,7 @@ def generate_id():
 
 def getDetails(id):
     try:
-        query = """SELECT First_name, Last_name, Date_Of_Birth, Department FROM employees WHERE Employee_ID = %s AND Delete_Flag = 0"""
+        query = """SELECT First_name, Last_name, Date_Of_Birth, Department FROM Employees WHERE Employee_ID = %s AND Delete_Flag = 0"""
         cursor.execute(query, (id,))
         result = cursor.fetchone()
         if result:
@@ -88,7 +88,7 @@ def checkMarked(id, date):
     else:
         try:
             query = """SELECT Time_Clocked_Out
-                    FROM registers
+                    FROM Registers
                     WHERE Employee_ID = %s AND Date = %s
                     ORDER BY Time_Clocked_In DESC LIMIT 1"""
             cursor.execute(query, (id, date))
@@ -107,9 +107,9 @@ def clockIn(id):
     if id == "Unknown":
         print("Can't run")
     try:
-        date = datetime.date.today().strftime("%Y-%m-%d")  # Adjust the format if needed
-        time = datetime.datetime.now().strftime("%H:%M")  # Adjust the format if needed
-        query = """INSERT INTO registers (Employee_ID, Date, Time_Clocked_In)
+        date = datetime.date.today().strftime("%Y-%m-%d")  
+        time = datetime.datetime.now().strftime("%H:%M")  
+        query = """INSERT INTO Registers (Employee_ID, Date, Time_Clocked_In)
                    VALUES (%s, %s, %s)"""
         cursor.execute(query, (id, date, time))
         db.commit()
@@ -122,21 +122,25 @@ def clockOut(id):
     if id == "Unknown":
         print("invalid credentials")
     else:
-        time = datetime.datetime.now().time().strftime("%H:%M")
-        query = """UPDATE registers
-                    SET Time_Clocked_Out = %s
-                    WHERE Employee_ID = %s
-                    ORDER BY Time_Clocked_In DESC
-                    LIMIT 1"""
-        cursor.execute(query, (time, id))
-        db.commit()
-        print("Employee clocked out")
+        try:
+            time = datetime.datetime.now().time().strftime("%H:%M")
+            query = """UPDATE Registers
+                        SET Time_Clocked_Out = %s
+                        WHERE Employee_ID = %s
+                        ORDER BY Time_Clocked_In DESC
+                        LIMIT 1"""
+            print(time)
+            cursor.execute(query, (time, id))
+            db.commit()
+            print("Employee clocked out")
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
 
 def updateRecord(id_TextField, first_name_TextField, last_name_TextField, dob_entry, dept_combobox):
     if first_name_TextField.get() == "" or last_name_TextField.get() == "" or dob_entry.get() == "" or dept_combobox.get() == "--select Dept--":
         messagebox.showerror("Error", "Error: Please fill all the fields")
     else:
-        query = """UPDATE employees 
+        query = """UPDATE Employees 
                 SET First_Name = %s,
                     Last_Name = %s,
                     Date_of_Birth = %s,
@@ -163,7 +167,7 @@ def updateRecord(id_TextField, first_name_TextField, last_name_TextField, dob_en
 
 def deleteRecord(id):
     try:
-        query = """UPDATE employees
+        query = """UPDATE Employees
                     SET Delete_Flag = 1 
                     WHERE Employee_ID = %s"""
         cursor.execute(query, (id,))
@@ -176,11 +180,13 @@ def deleteRecord(id):
 
 def getReport(date, table):
     try:
-        query = """SELECT Employee_ID, Time_Clocked_In, Time_Clocked_Out FROM registers
+        query = """SELECT Employee_ID, Time_Clocked_In, Time_Clocked_Out FROM Registers
                     WHERE Date = %s"""
         cursor.execute(query, (date,))
         results = cursor.fetchall()
         if results:
+            for item in table.get_children():
+                table.delete(item)
             for result in results:
                 id = result[0]
                 firstname, lastname = getName(id)
@@ -197,7 +203,7 @@ def getReport(date, table):
 def getName(id):
     try:
         query = """SELECT First_Name, Last_Name 
-                    FROM employees
+                    FROM Employees
                     WHERE Employee_ID = %s"""
         cursor.execute(query,(id,))
         results = cursor.fetchone()
