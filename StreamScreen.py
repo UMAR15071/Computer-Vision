@@ -16,8 +16,7 @@ def stream_screen(window, main_menu):
 
     FOLDER = "RegisteredFaces"
     files = os.listdir(FOLDER)
-
-    # ... [Your existing code for setting up the options frame and buttons]
+    
     options_frame = tk.Frame(window, bg='black')
     options_frame.pack(side = tk.RIGHT)
     options_frame.pack_propagate(False)

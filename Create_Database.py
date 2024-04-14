@@ -1,10 +1,10 @@
 import mysql.connector
 
 db = mysql.connector.connect(
-    host='localhost',
-    user='root',
-    passwd='root',
-    database='attendance_management'
+    host='attendance-management.czg8eiywyuez.eu-west-1.rds.amazonaws.com',
+    user='admin',
+    passwd='B00tCamp$',
+    database='attendanceManagement'
 )
 
 mycursor = db.cursor()
@@ -23,22 +23,13 @@ mycursor.execute('''
 
 mycursor.execute('''
     CREATE TABLE Registers (
-        Employee_ID int,
-        Date date,
-        Time_Clocked_In VARCHAR(7),
-        Time_Clocked_Out VARCHAR(7),
-        FOREIGN KEY (Employee_ID) REFERENCES Employees(Employee_ID)
+    Employee_ID int,
+    Date date,
+    Time_Clocked_In VARCHAR(7),
+    Time_Clocked_Out VARCHAR(7) DEFAULT 'None',
+    FOREIGN KEY (Employee_ID) REFERENCES Employees(Employee_ID)
     )
 ''')
 
-mycursor.execute("""
-    CREATE TABLE Administrators (
-    Administrator_ID int AUTO_INCREMENT,
-    Employee_ID int,
-    Username VARCHAR(30),
-    Password VARCHAR(30),
-    PRIMARY KEY (Administrator_ID),
-    FOREIGN KEY (Employee_ID) REFERENCES Employees(Employee_ID)
-)
-""")
+
 db.close()
