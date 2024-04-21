@@ -7,6 +7,17 @@ import os
 db = None
 cursor = None
 
+def get_resource_path(relative_path):
+    """ Get the absolute path to the resource, works for dev and PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 def establish_Connection():
     global db, cursor
     try:
@@ -172,12 +183,17 @@ def deleteRecord(id):
                     WHERE Employee_ID = %s"""
         cursor.execute(query, (id,))
         db.commit()
-        if os.path.exists("RegisteredFaces/"+str(id) + ".jpg"):
-            os.remove("RegisteredFaces/"+str(id) + ".jpg")
-        messagebox.showinfo("Success ","Recorded has been deleted Successfully")
-    except mysql.connector.Error as err:
-            print(f"Database error: {err}")
 
+        photo_path = get_resource_path(f"RegisteredFaces/{id}.jpg")
+
+        # Check if the photo exists and remove it
+        if os.path.exists(photo_path):
+            os.remove(photo_path)
+        
+        messagebox.showinfo("Success", "Record has been deleted successfully")
+
+    except mysql.connector.Error as err:
+        print(f"Database error: {err}")
 def getReport(date, table):
     try:
         query = """SELECT Employee_ID, Time_Clocked_In, Time_Clocked_Out FROM Registers

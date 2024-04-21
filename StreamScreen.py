@@ -1,6 +1,6 @@
 import datetime
 import tkinter as tk
-from util import close_screens
+from util import close_screens,get_resource_path
 from PIL import Image, ImageTk
 import numpy as np
 import cv2
@@ -14,7 +14,7 @@ def stream_screen(window, main_menu):
     close_screens(window)
     establish_Connection()
 
-    FOLDER = "RegisteredFaces"
+    FOLDER = get_resource_path("RegisteredFaces")
     files = os.listdir(FOLDER)
     
     options_frame = tk.Frame(window, bg='black')

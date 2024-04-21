@@ -5,59 +5,69 @@ import tkinter as tk
 import tkcalendar as tkcal
 from db_operations import generate_id, insertData, getDetails
 
-def takePhoto():
+import os
+import sys
+import cv2
 
+def get_resource_path(relative_path):
+    """ Get the absolute path to the resource, works for dev and PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+def takePhoto():
     video_capture = cv2.VideoCapture(0)
     global id
     id = generate_id()
 
+    faces_dir = get_resource_path("RegisteredFaces")
+
+    if not os.path.exists(faces_dir):
+        os.makedirs(faces_dir)
+
     while True:
         ret, frame = video_capture.read()
-
         cv2.imshow('frame', frame)
-        
-        if cv2.waitKey(1) & 0xFF == ord('c'):
-            cv2.imwrite("RegisteredFaces/"+str(id) + ".jpg", frame)
-            if os.path.exists("RegisteredFaces"):
-                cv2.imwrite("RegisteredFaces/"+str(id) + ".jpg", frame)
-            else:
-                os.makedirs("RegisteredFaces")
-                cv2.imwrite("RegisteredFaces/"+str(id) + ".jpg", frame)
 
+        if cv2.waitKey(1) & 0xFF == ord('c'):
+            photo_path = os.path.join(faces_dir, f"{id}.jpg")
+            cv2.imwrite(photo_path, frame)
             cv2.waitKey(2000)
             break
 
-        
-
-    video_capture.release() 
-
-    cv2.destroyAllWindows() 
+    video_capture.release()
+    cv2.destroyAllWindows()
 
 def updatePhoto(idTextField):
-
     id = idTextField.get()
     print(id)
-    if os.path.exists("RegisteredFaces/"+str(id) + ".jpg"):
-        os.remove("RegisteredFaces/"+str(id) + ".jpg")
+
+
+    photo_path = get_resource_path(f"RegisteredFaces/{id}.jpg")
+
+    
+    if os.path.exists(photo_path):
+        os.remove(photo_path)
+
     
     video_capture = cv2.VideoCapture(0)
-        
+    
     while True:
         ret, frame = video_capture.read()
-
         cv2.imshow('frame', frame)
             
         if cv2.waitKey(1) & 0xFF == ord('c'):
-            cv2.imwrite("RegisteredFaces/"+str(id) + ".jpg", frame)
+            cv2.imwrite(photo_path, frame)  
             cv2.waitKey(2000)
-            messagebox.showinfo("Success ","Recorded has been Updated")
+            messagebox.showinfo("Success", "Record has been updated")
             break
 
-            
-
-    video_capture.release() 
-
-    cv2.destroyAllWindows() 
+    video_capture.release()
+    cv2.destroyAllWindows()
 
 
 def close_screens(window):
