@@ -2,7 +2,7 @@ from tkinter import messagebox,Button
 import datetime
 import mysql.connector
 import tkinter as tk
-import os
+import os,sys
 
 db = None
 cursor = None

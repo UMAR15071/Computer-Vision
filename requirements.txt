@@ -1,0 +1,4 @@
+opencv==4.9.0
+face_recognition==1.2.3
+tkcalendar==1.5.0
+mysql.connector==8.2.0
