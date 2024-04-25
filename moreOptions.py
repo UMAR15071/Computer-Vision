@@ -161,7 +161,7 @@ def moreOptions(window, main_menu):
         dept_textField.place(x=400, y=350)
 
         delete_btn = tk.Button(view_frame, text="Delete", font=('bold', 15), width=55, fg='#FAF9F6', bg='#D2042D',
-                               command= lambda: deleteRecord(id_TextField.get()))
+                               command= lambda: deleteRecord(id_TextField.get(), first_name_TextField, last_name_TextField, dob_entry, dept_textField))
         delete_btn.place(x=50, y=400)
 
 #===================================================================================================================

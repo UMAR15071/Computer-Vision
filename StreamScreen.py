@@ -35,7 +35,7 @@ def stream_screen(window, main_menu):
         id_label.configure(text="ID: "+id)
         first_name_label.configure(text="Name: "+firstname+ " " + lastname)
         dept_label.configure(text="Department: "+dept)
-
+        
         clockin_btn.configure(command=lambda: clockIn(id))
         clockout_btn.configure(command=lambda: clockOut(id))
         
@@ -43,13 +43,17 @@ def stream_screen(window, main_menu):
     def changeState(id):
         date = datetime.date.today().strftime("%Y-%m-%d")
         marked = checkMarked(id,date)
-        if marked:
-            clockout_btn.configure(state='normal')
-            clockin_btn.configure(state='disabled')
+        if id == "unknown":
+            clockin_btn.configure(state = 'disabled')
+            clockout_btn.configure(state = 'disabled')
         else:
-            clockin_btn.configure(state='normal')
-            clockout_btn.configure(state='disabled')
-    
+            if marked:
+                clockout_btn.configure(state='normal')
+                clockin_btn.configure(state='disabled')
+            else:
+                clockin_btn.configure(state='normal')
+                clockout_btn.configure(state='disabled')
+        
     def disableButtons():
         id_label.configure(text="ID: ")
         first_name_label.configure(text="Name: ")

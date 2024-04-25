@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 from tkinter import messagebox
 import cv2
@@ -84,33 +85,26 @@ def pick_date(dob_entry):
     
     cal = tkcal.Calendar(date_window, selectmode='day', date_pattern='mm/dd/yyyy', 
                          background='black', foreground='white', headersbackground='sky blue', 
-                         normalbackground='lightblue', weekendbackground='lightblue', 
-                         othermonthforeground='grey', othermonthbackground='lightgrey', 
-                         othermonthweforeground='grey', othermonthwebackgroundd='lightgrey', 
+                         normalbackground='light blue', weekendbackground='light blue', 
+                         othermonthforeground='grey', othermonthbackground='light grey', 
+                         othermonthweforeground='grey', othermonthwebackground='light grey', 
                          selectbackground='blue', selectforeground='white')
     cal.place(x=0, y=0)
 
     submit_btn = tk.Button(date_window, text='Submit', command=lambda: grab_date(dob_entry), bg='#0055fe', fg='white', font=('yu gothic ui', 12))
     submit_btn.place(x=80, y=190)
 
-from datetime import datetime
-
 def grab_date(dob_entry):
-    dob_entry.delete(0, tk.END)
-    
-    # Get the date string from the calendar in MM/DD/YYYY format
-    date_str = cal.get_date()  
-    
-    # Convert the string to a datetime object
+    date_str = cal.get_date()
     date_obj = datetime.strptime(date_str, '%m/%d/%Y')
 
-    # Format the date in YYYY-MM-DD format
+    if date_obj > datetime.now():
+        messagebox.showerror("Invalid Date", "The date entered is in the future. Please enter a valid date.")
+        return
+
     formatted_date = date_obj.strftime('%Y-%m-%d')
-
-    # Insert the formatted date into the entry widget
+    dob_entry.delete(0, tk.END)
     dob_entry.insert(0, formatted_date)
-
-    # Close the date window
     date_window.destroy()
 
 
@@ -154,18 +148,24 @@ def fillData(id_TextField, first_name_TextField, last_name_TextField, dob_entry,
     dept_TextField.configure(state = 'normal')
 
     firstname, lastname, dob, dept = getDetails(id)
+    if firstname == "Unknown":
+        messagebox.showerror("Error", f"No record found")
+        first_name_TextField.configure(state = 'disabled')
+        last_name_TextField.configure(state = 'disabled')
+        dob_entry.configure(state = 'disabled')
+        dept_TextField.configure(state = 'disabled')
+    else:
+        first_name_TextField.delete(0, tk.END)
+        first_name_TextField.insert(0, firstname)
+        
+        last_name_TextField.delete(0, tk.END)
+        last_name_TextField.insert(0, lastname)
+        
+        dob_entry.delete(0, tk.END)
+        dob_entry.insert(0, dob)
 
-    first_name_TextField.delete(0, tk.END)
-    first_name_TextField.insert(0, firstname)
-    
-    last_name_TextField.delete(0, tk.END)
-    last_name_TextField.insert(0, lastname)
-    
-    dob_entry.delete(0, tk.END)
-    dob_entry.insert(0, dob)
-
-    dept_TextField.delete(0,tk.END)
-    dept_TextField.insert(0, dept)
+        dept_TextField.delete(0,tk.END)
+        dept_TextField.insert(0, dept)
 
     
     first_name_TextField.configure(state = 'disabled')

@@ -114,7 +114,6 @@ def checkMarked(id, date):
             return False
     
 def clockIn(id):
-    print(id)
     if id == "Unknown":
         print("Can't run")
     try:
@@ -127,6 +126,7 @@ def clockIn(id):
         print("Attendance marked")
     except mysql.connector.Error as err:
         print(f"Database error: {err}")
+    
 
 
 def clockOut(id):
@@ -137,7 +137,7 @@ def clockOut(id):
             time = datetime.datetime.now().time().strftime("%H:%M")
             query = """UPDATE Registers
                         SET Time_Clocked_Out = %s
-                        WHERE Employee_ID = %s
+                        WHERE Employee_ID = %s 
                         ORDER BY Time_Clocked_In DESC
                         LIMIT 1"""
             print(time)
@@ -176,7 +176,7 @@ def updateRecord(id_TextField, first_name_TextField, last_name_TextField, dob_en
         except mysql.connector.Error as err:
             print(f"Database error: {err}")
 
-def deleteRecord(id):
+def deleteRecord(id, first_name_TextField, last_name_TextField, dob_entry, dept_textField):
     try:
         query = """UPDATE Employees
                     SET Delete_Flag = 1 
@@ -190,6 +190,27 @@ def deleteRecord(id):
         if os.path.exists(photo_path):
             os.remove(photo_path)
         
+        first_name_TextField.configure(state='normal')
+        last_name_TextField.configure(state='normal')
+        dob_entry.configure(state='normal')
+        dept_textField.configure(state='normal')
+
+        first_name_TextField.delete(0, tk.END)
+
+        # Clear the entry field for last name
+        last_name_TextField.delete(0, tk.END)
+
+        # Clear the entry field for date of birth
+        dob_entry.delete(0, tk.END)
+
+        # Clear the entry field for department
+        dept_textField.delete(0, tk.END)
+
+        first_name_TextField.configure(state='disabled')
+        last_name_TextField.configure(state='disabled')
+        dob_entry.configure(state='disabled')
+        dept_textField.configure(state='disabled')
+            
         messagebox.showinfo("Success", "Record has been deleted successfully")
 
     except mysql.connector.Error as err:
