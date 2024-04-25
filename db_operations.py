@@ -130,18 +130,16 @@ def clockIn(id):
 
 
 def clockOut(id):
-    if id == "Unknown":
-        print("invalid credentials")
-    else:
         try:
             time = datetime.datetime.now().time().strftime("%H:%M")
+            date = datetime.date.today().strftime("%Y-%m-%d")  
             query = """UPDATE Registers
                         SET Time_Clocked_Out = %s
-                        WHERE Employee_ID = %s 
+                        WHERE Employee_ID = %s AND Date = %s
                         ORDER BY Time_Clocked_In DESC
                         LIMIT 1"""
             print(time)
-            cursor.execute(query, (time, id))
+            cursor.execute(query, (time, id, date))
             db.commit()
             print("Employee clocked out")
         except mysql.connector.Error as err:
